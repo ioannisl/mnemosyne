@@ -33,6 +33,7 @@ class DionaeaConnections(BaseNormalizer):
     def normalize(self, data, channel, submission_timestamp, ignore_rfc1918=True):
         o_data = json.loads(data)
 
+        o_data['local_host'] = self.normalize_ip(o_data['local_host'])
         o_data['remote_host'] = self.normalize_ip(o_data['remote_host'])
         if ignore_rfc1918 and self.is_RFC1918_addr(o_data['remote_host']):
             return []
@@ -54,6 +55,7 @@ class DionaeaConnections(BaseNormalizer):
                     'timestamp': submission_timestamp,
                     'source_ip': o_data['remote_host'],
                     'source_port': o_data['remote_port'],
+                    'destination_ip': o_data['local_host'],
                     'destination_port': o_data['local_port'],
                     'honeypot': 'dionaea',
                     'protocol': o_data['connection_protocol'],
